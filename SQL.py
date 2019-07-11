@@ -56,19 +56,55 @@ class Analyse:
          countries_data_list[country] = self.data_country(country)
 
       return countries_data_list
-      def av(self, countries, years):
-      av_list = {}
-      for country in countries:
-         CC = self.name_to_code(country)
-         av_list[country] =  session.query(func.avg(Gdp.gdp)).filter_by(CountryCode=CC).filter(Gdp.Year.in_(years)).first()[0]
-      return av_list
    
    def av_growth(self, countries, years):
       av_list = {}
       for country in countries:
          CC = self.name_to_code(country)
-         years_vect = [x for x in range(years[0], years[1]+1)]
-         av_list[country] = session.query(func.avg(Gdp.growth)).filter_by(CountryCode=CC).filter(Gdp.Year.in_(years_vect)).first()[0]
+         av_list[country] = session.query(func.avg(Gdp.growth)).filter_by(CountryCode=CC).filter(Gdp.Year.in_(years)).first()[0]
+      
       return av_list
+       def min_gdp(self,listOfCountries,years):
+        list_of_code = {}
+        for country in listOfCountries:
+            name = self.name_to_code(country)
+            years_vect = [x for x in range(years[0], years[1] + 1)]
+            list_of_code[country] = session.query(func.min(Gdp.gdp)).filter_by(CountryCode=name).filter(Gdp.Year.in_(years_vect)).first()[0]
+        for elt in list(list_of_code.items()):
+            if elt[1] == '':
+                list_of_code[elt[0]] = 0
+        return min(list(list_of_code.values()))
 
+    def max_gdp(self,listOfCountries,years):
+        list_of_code = {}
+        for country in listOfCountries:
+            name = self.name_to_code(country)
+            years_vect = [x for x in range(years[0], years[1] + 1)]
+            list_of_code[country] = session.query(func.max(Gdp.gdp)).filter_by(CountryCode=name).filter(Gdp.Year.in_(years_vect)).first()[0]
+        for elt in list(list_of_code.items()):
+            if elt[1] == '':
+                list_of_code[elt[0]] = 0
+        return max(list(list_of_code.values()))
+
+    def min_growth(self,listOfCountries,years):
+        list_of_code = {}
+        for country in listOfCountries:
+            name = self.name_to_code(country)
+            years_vect = [x for x in range(years[0], years[1] + 1)]
+            list_of_code[country] = session.query(func.min(Gdp.growth)).filter_by(CountryCode=name).filter(Gdp.Year.in_(years_vect)).all()[0]
+        for elt in list(list_of_code.items()):
+            if elt[1] == '':
+                list_of_code[elt[0]] = 0
+        return min(list(list_of_code.values()))
+
+    def max_growth(self,listOfCountries,years):
+        list_of_code = {}
+        for country in listOfCountries:
+            name = self.name_to_code(country)
+            years_vect = [x for x in range (years[0], years[1]+1)]
+            list_of_code[country] = session.query(func.max(Gdp.growth)).filter_by(CountryCode=name).filter(Gdp.Year.in_(years_vect)).first()[0]
+        for elt in list(list_of_code.items()):
+            if elt[1] == '':
+                list_of_code[elt[0]] = 0
+        return max(list(list_of_code.values()))
 
